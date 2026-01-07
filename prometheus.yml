@@ -1,0 +1,14 @@
+global:
+  scrape_interval: 60s
+  evaluation_interval: 60s
+
+storage:
+  tsdb:
+    out_of_order_time_window: 24h
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+# Ultrahuman metrics are pushed via remote write, no scraping needed

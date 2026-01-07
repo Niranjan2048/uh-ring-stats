@@ -1,0 +1,60 @@
+services:
+  prometheus:
+    image: prom/prometheus:v2.54.0
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=90d'
+      - '--web.enable-remote-write-receiver'
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9090/-/ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  uh-ring:
+    build: .
+    container_name: uh-ring
+    environment:
+      - ULTRAHUMAN_API_TOKEN=${ULTRAHUMAN_API_TOKEN}
+    command:
+      - "--port"
+      - "8080"
+      - "--interval"
+      - "60"
+      - "--remote-write-url"
+      - "http://prometheus:9090/api/v1/write"
+      - "serve"
+    ports:
+      - "8080:8080"
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+volumes:
+  prometheus_data:
+  grafana_data:
