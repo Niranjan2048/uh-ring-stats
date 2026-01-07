@@ -2,6 +2,12 @@
 
 A CLI tool for Ultrahuman Ring metrics. Fetch your health data from the Ultrahuman API and visualize it with Grafana.
 
+## Installation
+
+```bash
+go install github.com/Hunter-Thompson/uh-ring@latest
+```
+
 ## Quick Start
 
 ### 1. Get your API token
@@ -63,6 +69,52 @@ export ULTRAHUMAN_API_TOKEN=your_api_token_here
 ./uh-ring sleep           # Sleep score
 ./uh-ring steps           # Step count
 ./uh-ring glucose         # Glucose level (mg/dL)
+```
+
+### Example Output
+
+```
+══════════════════════════════════════════════════════════
+  ULTRAHUMAN METRICS | Timezone: Asia/Kolkata
+══════════════════════════════════════════════════════════
+
+  Date: 2026-01-07
+──────────────────────────────────────────────────────────
+
+  HEART RATE
+      Last: 85 BPM
+      - 75 BPM @ 15:35
+      - 85 BPM @ 15:40
+      ...
+
+  SKIN TEMPERATURE
+      Last: 33.0°C
+      - 30.7°C @ 15:37
+      - 31.6°C @ 15:42
+      ...
+
+  SPO2 (Blood Oxygen)
+      Average: 97%
+      - 97% @ 15:35
+      - 97% @ 15:40
+      ...
+
+  HEART RATE VARIABILITY
+      Last: 0 ms
+      - 57 ms @ 15:45
+      - 64 ms @ 15:55
+      ...
+
+  STEPS
+      Total: 474 | Avg: 12
+
+  MOVEMENT INDEX
+      Score: 61
+
+  ACTIVE MINUTES
+      Value: 5 min
+
+══════════════════════════════════════════════════════════
 ```
 
 ### Server Mode
